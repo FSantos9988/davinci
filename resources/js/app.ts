@@ -7,6 +7,18 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 
+import PrimeVue from 'primevue/config';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import ToastService from 'primevue/toastservice';
+
+//import 'primevue/resources/themes/lara-light-indigo/theme.css';
+//import 'primevue/resources/primevue.min.css';
+//import 'primeicons/primeicons.css';
+
 // Extend ImportMeta interface for Vite...
 declare module 'vite/client' {
     interface ImportMetaEnv {
@@ -21,6 +33,19 @@ declare module 'vite/client' {
 }
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+const app = createApp({});
+
+app.use(PrimeVue);
+app.use(ToastService);
+
+app.component('DataTable', DataTable);
+app.component('Column', Column);
+app.component('Button', Button);
+app.component('Dialog', Dialog);
+app.component('InputText', InputText);
+
+app.mount('#app');
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
