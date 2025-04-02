@@ -78,9 +78,47 @@ class BancosCtrl extends \AppController
         try {
             $response->total = $bancosDAO->getCount();
             $bancosDAO->setSortCriteria($sortCriteria);
-            $bancosDAO->setLimit($first, $rows)
-        } catch (Exception $ex) {
-
+            $bancosDAO->setLimit($first, $rows);
+            
+            while($row = $bancosDAO->getResult()) {
+                $bancosFound[] = $row;
+            }
+            
+            $response->rows = $bancosFound;
+            $response->success = TRUE;
+        } catch (\PDOException $ex) {
+            $response->setFailedMessage("Busca de Dados", "Erro ao resgatar os dados (erro " . $ex->getCode() . ").");
         }
+    }
+    
+    static protected function action_suggestions() {
+        // 1) Read POST parameters */
+        $request = new \Request();
+        
+        // 2) Request the rows matching the criterium from the database
+        $bancosDAO = new BancosDAO();
+        $bancosDAO->setNameAsFilter('%' . $request->criteria . '%');
+        $bancosDAO->setSortCriteria('nome');
+        $bancosDAO->setLimit(0, 10);
+        
+        $response = new \Response();
+        $previousSuggestion = '';
+        $suggestions = array();
+        
+        try {
+            while ($row = $bancosDAO->getResult()) {
+                if ($row['nome'] !== $previousSuggestion) {
+                    $suggestions[]['label'] = $row['nome'];
+                    $previousSuggestion = $row['nome'];
+                }
+            }
+            
+            $response->setResponse($suggestions);
+        } catch (\PDOException $ex) {
+            $response->setFailedMessage("SUGESTÕES", "Erro ao pesquisar sujestões de bancos (Erro: " . $ex->getCode() . ").");
+        }
+        
+        // 3) Return JSON response
+        return $response;
     }
 }
