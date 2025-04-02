@@ -134,14 +134,14 @@ define('CFG_ZNETDK_JS',CFG_ZNETDK_JS_DIR.'/minified/znetdk-min.js');
 define('CFG_APP_JS',NULL);
 
 /** Load Development version of the PrimeUI & ZnetDK widgets for debug purpose */
-define('CFG_DEV_JS_ENABLED',FALSE);
+define('CFG_DEV_JS_ENABLED',TRUE);
 
 /**
  * Show technical error details from the end user.
  * @return Boolean This parameter is FALSE by default (technical error details
  * are hidden).
  */
-define('CFG_DISPLAY_ERROR_DETAIL', FALSE);
+define('CFG_DISPLAY_ERROR_DETAIL', TRUE);
 
 /** Class and method to call for minifying the CSS and JS libraries before
  *  rendering the dependencies.

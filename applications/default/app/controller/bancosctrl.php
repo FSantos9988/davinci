@@ -18,7 +18,7 @@ class BancosCtrl extends \AppController
         try {
             $bancoID = $bancosDAO->store($row);
             $response->setSuccessMessage('SUCESSO', 
-                    \General::getFilledMessage('Banco cadastrado com sucesso!', $banciID));
+                    \General::getFilledMessage('Banco cadastrado com sucesso!', $bancoID));
         } catch (\PDOException $ex) {
             $response->setFailedMessage('ERRO', 
                     \General::getFilledMessage('Erro ao cadastrar o banco %1 (Erro: %2)', 
@@ -57,17 +57,21 @@ class BancosCtrl extends \AppController
     static protected function action_data()
     {
         // 1) Read POST parameters
-        $request = \Request();
+        $request = new \Request();
         // --> Pagination
         $first = $request->first; 
         $rows = $request->rows;
         // --> Sort criteria
         $sortField = $request->sortfield; 
         $sortOrder = $request->sortorder;
-        $sortCriteria = is_null($sortField) ? 'nome' : $sortField . (is_null($sortOrder) ? ' ASC' : $sortOrder == 1 ? ' ASC' : ' DESC');
+        $sortCriteria = is_null($sortField) 
+            ? 'nome' 
+            : $sortField . (is_null($sortOrder) 
+                ? ' ASC' 
+                : ($sortOrder == 1 ? ' ASC' : ' DESC'));
         // --> Filter criteria
         $criteria = $request->search_criteria;
-        $keyword = '%' . $criteria . '%';
+        $keyword = "%" . $criteria . "%";
         
         // 2) Request rows from the database
         $response = new \Response();
@@ -89,6 +93,9 @@ class BancosCtrl extends \AppController
         } catch (\PDOException $ex) {
             $response->setFailedMessage("Busca de Dados", "Erro ao resgatar os dados (erro " . $ex->getCode() . ").");
         }
+
+        // 3) Return JSON response
+        return $response;
     }
     
     static protected function action_suggestions() {
@@ -97,7 +104,7 @@ class BancosCtrl extends \AppController
         
         // 2) Request the rows matching the criterium from the database
         $bancosDAO = new BancosDAO();
-        $bancosDAO->setNameAsFilter('%' . $request->criteria . '%');
+        $bancosDAO->setNameAsFilter("'%" . $request->criteria . "%'");
         $bancosDAO->setSortCriteria('nome');
         $bancosDAO->setLimit(0, 10);
         
