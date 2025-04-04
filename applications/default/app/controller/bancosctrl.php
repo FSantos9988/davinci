@@ -59,8 +59,8 @@ class BancosCtrl extends \AppController
         // 1) Read POST parameters
         $request = new \Request();
         // --> Pagination
-        $first = $request->first; 
-        $rows = $request->rows;
+        $first = isset($request->first) ? $request->first : 0; 
+        $rows = isset($request->rows) ? $request->rows : 10;
         // --> Sort criteria
         $sortField = $request->sortfield; 
         $sortOrder = $request->sortorder;
@@ -71,7 +71,7 @@ class BancosCtrl extends \AppController
                 : ($sortOrder == 1 ? ' ASC' : ' DESC'));
         // --> Filter criteria
         $criteria = $request->search_criteria;
-        $keyword = "%" . $criteria . "%";
+        $keyword = '%' . $criteria . '%';
         
         // 2) Request rows from the database
         $response = new \Response();
